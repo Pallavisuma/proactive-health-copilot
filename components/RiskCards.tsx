@@ -27,21 +27,36 @@ export default function RiskCards({
   ];
 
   return (
-    <div className="grid grid-cols-2 gap-4">
-      {cards.map((card) => (
-        <div
-          key={card.label}
-          className="bg-white rounded-2xl p-5 border"
-        >
-          <div className="text-gray-500 text-sm">
-            {card.label}
-          </div>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {cards.map((card) => {
+        const isHigh = card.value > 50;
+        const isMedium = card.value > 25 && card.value <= 50;
+        
+        return (
+          <div
+            key={card.label}
+            className={`rounded-3xl p-6 border transition-all duration-300 hover:shadow-lg ${
+              isHigh 
+                ? "bg-gradient-to-br from-rose-50 to-rose-100 border-rose-200" 
+                : isMedium 
+                  ? "bg-gradient-to-br from-amber-50 to-orange-50 border-amber-200"
+                  : "bg-gradient-to-br from-white to-slate-50 border-slate-200"
+            }`}
+          >
+            <div className={`text-sm font-semibold tracking-wide uppercase ${
+              isHigh ? "text-rose-700" : isMedium ? "text-amber-700" : "text-slate-500"
+            }`}>
+              {card.label}
+            </div>
 
-          <div className="text-3xl font-bold mt-2">
-            {card.value}%
+            <div className={`text-4xl font-extrabold mt-3 ${
+              isHigh ? "text-rose-900" : isMedium ? "text-amber-900" : "text-slate-800"
+            }`}>
+              {card.value}%
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

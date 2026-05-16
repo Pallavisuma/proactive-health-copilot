@@ -67,7 +67,7 @@ export default function Home() {
 
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-slate-50 font-sans text-slate-900 selection:bg-indigo-200">
       {/* Sidebar */}
       <UserSidebar
         users={users}
@@ -76,19 +76,23 @@ export default function Home() {
       />
 
       {/* Main Content */}
-      <main className="flex-1 p-6 overflow-y-auto">
-        <div className="space-y-6">
+      <main className="flex-1 p-8 lg:p-12 overflow-y-auto">
+        <div className="max-w-7xl mx-auto space-y-8">
           {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold">
-              {dashboardData?.profile?.name}
-            </h1>
-
-            <p className="text-gray-600 mt-1">
-              {
-                dashboardData?.profile?.condition
-              }
-            </p>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 pb-6">
+            <div>
+              <p className="text-sm font-semibold text-indigo-600 tracking-wider uppercase mb-1">Patient Profile</p>
+              <h1 className="text-4xl font-extrabold tracking-tight text-slate-900">
+                {dashboardData?.profile?.name}
+              </h1>
+              <p className="text-slate-500 mt-2 text-lg">
+                {dashboardData?.profile?.condition}
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-white px-4 py-2 rounded-full shadow-sm border border-slate-100">
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
+              <span className="text-sm font-medium text-slate-600">Live Telemetry Active</span>
+            </div>
           </div>
 
           {/* Risk Cards */}
@@ -101,7 +105,7 @@ export default function Home() {
             healthTwin={dashboardData?.healthState}
           />
 
-          <div className="grid grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             <TrendChart
               title="Sleep Efficiency Trend"
               data={sleepTrend}
@@ -115,39 +119,46 @@ export default function Home() {
             />
           </div>
 
-          {/* Proactive Feed */}
-          <div>
-            <h2 className="text-2xl font-bold mb-4">
-              Proactive Insights
-            </h2>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            {/* Proactive Feed */}
+            <div className="xl:col-span-2 space-y-6">
+              <div className="flex items-center gap-2 mb-4">
+                <h2 className="text-2xl font-bold tracking-tight">
+                  Proactive Insights
+                </h2>
+              </div>
+              
+              <CustomAlertSettings 
+                onSimulateAlert={(msg) => {
+                  const newAlert = {
+                    id: `custom-${Date.now()}`,
+                    type: "WARNING",
+                    message: msg,
+                    timestamp: new Date().toISOString()
+                  };
+                  setCustomAlerts(prev => [...prev, newAlert]);
+                }} 
+              />
+
+              <ProactiveFeed
+                triggers={
+                  dashboardData?.triggers || []
+                }
+              />
+
+              <AgentOrchestrationPanel
+                memory={dashboardData?.memory}
+                agentOutputs={
+                  dashboardData?.agentOutputs || []
+                }
+                alerts={dashboardData?.alerts || []}
+              />
+            </div>
             
-            <CustomAlertSettings 
-              onSimulateAlert={(msg) => {
-                const newAlert = {
-                  id: `custom-${Date.now()}`,
-                  type: "WARNING",
-                  message: msg,
-                  timestamp: new Date().toISOString()
-                };
-                setCustomAlerts(prev => [...prev, newAlert]);
-              }} 
-            />
-
-            <ProactiveFeed
-              triggers={
-                dashboardData?.triggers || []
-              }
-            />
-
-            <AgentOrchestrationPanel
-              memory={dashboardData?.memory}
-              agentOutputs={
-                dashboardData?.agentOutputs || []
-              }
-              alerts={dashboardData?.alerts || []}
-            />
-
-            <TimelineFeed />
+            {/* Timeline */}
+            <div className="xl:col-span-1">
+              <TimelineFeed />
+            </div>
           </div>
         </div>
       </main>
