@@ -9,6 +9,7 @@ import AgentOrchestrationPanel from "@/components/AgentOrchestrationPanel";
 import TrendChart from "@/components/TrendChart";
 import TimelineFeed from "@/components/TimelineFeed";
 import HealthTwinPanel from "@/components/HealthTwinPanel";
+import CopilotChat from "@/components/CopilotChat";
 export default function Home() {
   const [users, setUsers] = useState<any[]>([]);
 
@@ -134,6 +135,9 @@ export default function Home() {
           </div>
         </div>
       </main>
+
+      {/* Copilot Chatbot */}
+      <CopilotChat userId={selectedUser} />
     </div>
   );
 }
