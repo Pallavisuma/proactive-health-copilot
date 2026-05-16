@@ -29,7 +29,7 @@ User message: "${message}"
 
   try {
     const response = await anthropic.messages.create({
-      model: "claude-2.1",
+      model: "claude-sonnet-4-5-20250929",
       max_tokens: 10,
       messages: [
         {
