@@ -1,36 +1,40 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Proactive Health Copilot
+
+Proactive Health Copilot is an AI-powered health dashboard that synthesizes user data from wearables, medical records, and lab results. It uses advanced agentic workflows with Anthropic's Claude to infer health states, identify risks, and proactively alert users to potential health events before they escalate.
+
+## Features
+
+- **Health Twin Panel**: Visualizes inferred health states, AI confidence, and the primary drivers of those states.
+- **Trend Charts**: Interactive visualizations of physiological metrics (e.g., Sleep Efficiency, Resting Heart Rate) over time.
+- **Longitudinal Intelligence**: A timeline feed providing contextual analysis of health patterns based on historical and current data.
+- **Agentic Workflows**: Utilizes a multi-agent system (Risk Engine, Context Engine, Trigger Engine, Alert Layer) connected to an LLM for holistic health analysis.
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Set up your environment variables by creating a `.env.local` file:
+
+```env
+ANTHROPIC_API_KEY=your-anthropic-api-key
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to view the dashboard.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tech Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Framework**: Next.js (App Router)
+- **Styling**: Tailwind CSS, Lucide React
+- **Charts**: Recharts
+- **AI Integration**: Anthropic SDK (Claude Models)
+- **Language**: TypeScript
