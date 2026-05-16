@@ -10,6 +10,7 @@ import TrendChart from "@/components/TrendChart";
 import TimelineFeed from "@/components/TimelineFeed";
 import HealthTwinPanel from "@/components/HealthTwinPanel";
 import CopilotChat from "@/components/CopilotChat";
+import ProactiveAlerts from "@/components/ProactiveAlerts";
 export default function Home() {
   const [users, setUsers] = useState<any[]>([]);
 
@@ -138,6 +139,9 @@ export default function Home() {
 
       {/* Copilot Chatbot */}
       <CopilotChat userId={selectedUser} />
+
+      {/* Proactive Push Notifications */}
+      <ProactiveAlerts alerts={dashboardData?.alerts || []} />
     </div>
   );
 }
