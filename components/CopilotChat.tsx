@@ -12,18 +12,25 @@ interface Message {
   intent?: string;
 }
 
-export default function CopilotChat({ userId }: { userId: string }) {
+export default function CopilotChat({ userId, userName }: { userId: string, userName?: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "bot",
-      content: "Hello! I'm your Proactive Health Copilot. I've analyzed your recent data. How can I help you today?",
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Reset chat and personalize greeting when user changes
+  useEffect(() => {
+    setMessages([
+      {
+        id: `welcome-${userId}`,
+        role: "bot",
+        content: `Hello ${userName ? userName.split(' ')[0] : ''}! I'm your Proactive Health Copilot. I've loaded your specific health profile and recent data. How can I help you today?`,
+      },
+    ]);
+    // Optionally close the chat when switching users
+    setIsOpen(false);
+  }, [userId, userName]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

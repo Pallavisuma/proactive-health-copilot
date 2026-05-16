@@ -138,7 +138,7 @@ export default function Home() {
       </main>
 
       {/* Copilot Chatbot */}
-      <CopilotChat userId={selectedUser} />
+      <CopilotChat userId={selectedUser} userName={dashboardData?.profile?.name} />
 
       {/* Proactive Push Notifications */}
       <ProactiveAlerts alerts={dashboardData?.alerts || []} />
