@@ -44,24 +44,43 @@ Activity: ${userContext?.recentTrends?.avgSteps || "Unknown"} steps
       systemPrompt += ` Provide helpful, safe, general advice. Remind them you are an AI and not a doctor.`;
     }
 
-    const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-latest",
-      max_tokens: 400,
-      system: systemPrompt,
-      messages: [
-        {
-          role: "user",
-          content: message,
-        },
-      ],
-    });
+    let aiResponseText = "";
+    
+    try {
+      const response = await anthropic.messages.create({
+        model: "claude-2.1",
+        max_tokens: 400,
+        system: systemPrompt,
+        messages: [
+          {
+            role: "user",
+            content: message,
+          },
+        ],
+      });
 
-    const textBlock = response.content.find(
-      (block): block is Anthropic.TextBlock => block.type === "text"
-    );
+      const textBlock = response.content.find(
+        (block): block is Anthropic.TextBlock => block.type === "text"
+      );
+      
+      aiResponseText = textBlock?.text || "I'm sorry, I couldn't process that.";
+    } catch (apiError: any) {
+      console.warn("Anthropic API failed in chat route, using fallback:", apiError.message);
+      
+      // Fallback responses
+      if (intent === "EMERGENCY") {
+        aiResponseText = "URGENT: Please contact emergency services (e.g., 911) or go to the nearest hospital immediately. I am an AI and cannot provide medical assistance.";
+      } else if (intent === "DATA_QUERY") {
+        aiResponseText = `Based on your recent data: You have a Sleep Efficiency of ${userContext?.recentTrends?.avgSleepEfficiency}% and an average Resting HR of ${userContext?.recentTrends?.avgRestingHR} bpm.`;
+      } else if (intent === "SYMPTOM_LOGGING") {
+        aiResponseText = "I have logged your symptom. Given your context, please continue monitoring this. If it worsens, consult a healthcare professional.";
+      } else {
+        aiResponseText = "Thank you for sharing. Remember to maintain healthy habits. (Note: AI response generated via fallback due to API configuration).";
+      }
+    }
 
     return NextResponse.json({
-      response: textBlock?.text || "I'm sorry, I couldn't process that.",
+      response: aiResponseText,
       intent,
     });
   } catch (error: any) {

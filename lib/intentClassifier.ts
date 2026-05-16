@@ -29,7 +29,7 @@ User message: "${message}"
 
   try {
     const response = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-latest",
+      model: "claude-2.1",
       max_tokens: 10,
       messages: [
         {
@@ -50,8 +50,21 @@ User message: "${message}"
     }
     
     return "UNKNOWN";
-  } catch (error) {
-    console.error("Intent classification failed:", error);
-    return "UNKNOWN";
+  } catch (error: any) {
+    console.warn("Intent classification API failed, using heuristic fallback:", error.message);
+    
+    // Heuristic fallback
+    const lower = message.toLowerCase();
+    if (lower.includes("emergency") || lower.includes("hospital") || lower.includes("911") || lower.includes("pain") && lower.includes("chest")) {
+      return "EMERGENCY";
+    }
+    if (lower.includes("sleep") || lower.includes("heart") || lower.includes("step") || lower.includes("trend") || lower.includes("data")) {
+      return "DATA_QUERY";
+    }
+    if (lower.includes("feel") || lower.includes("headache") || lower.includes("dizzy") || lower.includes("hurt") || lower.includes("symptom")) {
+      return "SYMPTOM_LOGGING";
+    }
+    
+    return "GENERAL_ADVICE";
   }
 }

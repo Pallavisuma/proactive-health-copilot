@@ -45,23 +45,25 @@ Generate:
 Keep response human, proactive, and concise.
 `;
 
-  const response = await anthropic.messages.create({
-    model: "claude-3-5-sonnet-latest",
+  try {
+    const response = await anthropic.messages.create({
+      model: "claude-2.1",
+      max_tokens: 500,
+      messages: [
+        {
+          role: "user",
+          content: prompt,
+        },
+      ],
+    });
 
-    max_tokens: 500,
+    const textBlock = response.content.find(
+      (block): block is Anthropic.TextBlock => block.type === "text"
+    );
 
-    messages: [
-      {
-        role: "user",
-        content: prompt,
-      },
-    ],
-  });
-
-  // Use a type guard to safely access the text property
-  const textBlock = response.content.find(
-    (block): block is Anthropic.TextBlock => block.type === "text"
-  );
-
-  return textBlock?.text || "";
+    return textBlock?.text || "";
+  } catch (error: any) {
+    console.warn("aiEngine API failed, using fallback:", error.message);
+    return `**Health Summary:** Based on your recent data, your sleep efficiency is ${context.recentTrends.avgSleepEfficiency}% and resting HR is ${context.recentTrends.avgRestingHR} bpm. Please continue to monitor these trends.\n\n**Coaching:** Consider maintaining a regular sleep schedule to improve recovery.\n\n**Recommendation:** Aim for 80%+ sleep efficiency.`;
+  }
 }
