@@ -30,6 +30,7 @@ export default function CopilotChat({ userId, userName }: { userId: string, user
     ]);
     // Optionally close the chat when switching users
     setIsOpen(false);
+    setIsTyping(false);
   }, [userId, userName]);
 
   const scrollToBottom = () => {
