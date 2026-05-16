@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import { MessageCircle, X, Send, User, Bot, AlertTriangle } from "lucide-react";
 
+import ReactMarkdown from "react-markdown";
+
 interface Message {
   id: string;
   role: "user" | "bot" | "system";
@@ -134,7 +136,9 @@ export default function CopilotChat({ userId }: { userId: string }) {
                 >
                   {msg.role === "system" && <AlertTriangle size={16} className="mt-0.5 shrink-0" />}
                   <div>
-                    <p className="text-sm">{msg.content}</p>
+                    <div className="text-sm space-y-2 [&>p]:mb-2 [&>ul]:list-disc [&>ul]:pl-4 [&>ol]:list-decimal [&>ol]:pl-4 [&>h3]:font-bold [&>h4]:font-bold">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
                     {msg.intent && (
                       <span className="text-[10px] uppercase tracking-wider text-indigo-400 mt-2 block font-semibold">
                         INTENT: {msg.intent}
