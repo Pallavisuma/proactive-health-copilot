@@ -15,7 +15,21 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
     }
 
-    const intent = await classifyIntent(message);
+    // --- APPLY HEALTHCARE GUARDRAILS ---
+    const { runHealthcareGuardrails } = await import("@/lib/guardrails");
+    const guardrailCheck = runHealthcareGuardrails(message);
+    
+    if (guardrailCheck.isBlocked) {
+      return NextResponse.json({
+        response: guardrailCheck.emergencyOverride,
+        intent: guardrailCheck.reason, // e.g. EMERGENCY_ESCALATION
+      });
+    }
+
+    // Use sanitized message for the rest of the flow
+    const safeMessage = guardrailCheck.sanitizedMessage;
+
+    const intent = await classifyIntent(safeMessage);
 
     // Provide context if it's a data query or symptom logging
     let contextStr = "";
@@ -54,7 +68,7 @@ Activity: ${userContext?.recentTrends?.avgSteps || "Unknown"} steps
         messages: [
           {
             role: "user",
-            content: message,
+            content: safeMessage,
           },
         ],
       });

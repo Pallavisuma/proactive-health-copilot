@@ -11,6 +11,7 @@ import TimelineFeed from "@/components/TimelineFeed";
 import HealthTwinPanel from "@/components/HealthTwinPanel";
 import CopilotChat from "@/components/CopilotChat";
 import ProactiveAlerts from "@/components/ProactiveAlerts";
+import CustomAlertSettings from "@/components/CustomAlertSettings";
 export default function Home() {
   const [users, setUsers] = useState<any[]>([]);
 
@@ -19,6 +20,8 @@ export default function Home() {
 
   const [dashboardData, setDashboardData] =
     useState<any>(null);
+
+  const [customAlerts, setCustomAlerts] = useState<any[]>([]);
 
   // ----------------------------
   // Load users
@@ -117,6 +120,18 @@ export default function Home() {
             <h2 className="text-2xl font-bold mb-4">
               Proactive Insights
             </h2>
+            
+            <CustomAlertSettings 
+              onSimulateAlert={(msg) => {
+                const newAlert = {
+                  id: `custom-${Date.now()}`,
+                  type: "WARNING",
+                  message: msg,
+                  timestamp: new Date().toISOString()
+                };
+                setCustomAlerts(prev => [...prev, newAlert]);
+              }} 
+            />
 
             <ProactiveFeed
               triggers={
@@ -141,7 +156,7 @@ export default function Home() {
       <CopilotChat key={selectedUser} userId={selectedUser} userName={dashboardData?.profile?.name} />
 
       {/* Proactive Push Notifications */}
-      <ProactiveAlerts alerts={dashboardData?.alerts || []} />
+      <ProactiveAlerts alerts={[...customAlerts, ...(dashboardData?.alerts || [])]} />
     </div>
   );
 }
